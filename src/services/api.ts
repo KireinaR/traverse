@@ -1,6 +1,6 @@
 import { RoadGraph, SearchResult } from '../types';
 
-const BASE = '/api';
+const BASE = 'https://traverse-api.mris.workers.dev';
 
 async function fetchJSON<T>(url: string): Promise<T> {
   const res = await fetch(url);
