@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import { Router } from 'express';
 import { getGraph, getNearestNode } from './server/controllers/graphController';
@@ -12,7 +11,6 @@ export function createApp() {
   const app = express();
 
   app.use(cors({ origin: true }));
-  app.use(compression());
   app.use(express.json());
 
   app.use(
