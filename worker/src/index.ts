@@ -3,9 +3,19 @@ import { cors } from 'hono/cors';
 import { fetchRoadNetwork } from './overpass.ts';
 import { buildGraph, findNearestNode } from './graphBuilder.ts';
 
-const app = new Hono();
+type Env = { API_KEY: string };
+
+const app = new Hono<{ Bindings: Env }>();
 
 app.use('*', cors({ origin: '*' }));
+
+app.use('*', async (c, next) => {
+  const key = c.req.header('X-API-Key');
+  if (!key || key !== c.env.API_KEY) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  return next();
+});
 
 // ── Graph ─────────────────────────────────────────────────────────────────────
 

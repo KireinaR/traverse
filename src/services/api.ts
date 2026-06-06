@@ -1,9 +1,12 @@
 import { RoadGraph, SearchResult } from '../types';
 
-const BASE = 'https://traverse-api.mris.workers.dev';
+const BASE = import.meta.env.VITE_API_BASE as string;
+const API_KEY = import.meta.env.VITE_API_KEY as string;
 
 async function fetchJSON<T>(url: string): Promise<T> {
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    headers: { 'X-API-Key': API_KEY },
+  });
   if (!res.ok) {
     const body = await res.json().catch(() => ({ error: res.statusText }));
     const message = body.error || `HTTP ${res.status}`;
