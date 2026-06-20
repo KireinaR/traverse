@@ -27,7 +27,9 @@ None of these requests include your name, account, location-on-load, or any othe
 
 ## Accounts, cookies, and tracking
 
-Traverse has no user accounts, no login, no cookies, and no analytics or tracking scripts. There is nothing to opt out of because nothing is collected in the first place.
+Traverse has no user accounts, no login, no analytics, and no tracking scripts.
+
+The only thing saved on your device is a single local flag (`traverse_privacy_accepted`) recording that you've dismissed the privacy notice on this browser, so it doesn't show again on your next visit. It contains no personal data and isn't sent to any server — it's stored using `localStorage`, not a cookie.
 
 ## Changes to this policy
 

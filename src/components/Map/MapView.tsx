@@ -6,6 +6,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { reverseGeocode } from '../../services/api';
 import { SpeedMultiplier, VisualizationStep, AlgorithmId } from '../../types';
 import { ALGORITHMS, COMPARE_COLORS } from '../../lib/algorithmMeta';
+import { hasConsent, CONSENT_EVENT } from '../../lib/consent';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -620,12 +621,19 @@ export default function MapView() {
       map.setView([lat, lng], zoom ?? map.getZoom(), { animate: false });
     };
 
-    if (navigator.geolocation) {
+    const geolocate = () => {
+      if (!navigator.geolocation) return;
       navigator.geolocation.getCurrentPosition(
         ({ coords }) => map.setView([coords.latitude, coords.longitude], 13, { animate: false }),
         () => {},
         { timeout: 6000 },
       );
+    };
+
+    if (hasConsent()) {
+      geolocate();
+    } else {
+      window.addEventListener(CONSENT_EVENT, geolocate, { once: true });
     }
   }, []); // eslint-disable-line
 
