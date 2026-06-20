@@ -197,3 +197,14 @@ export const ALGORITHMS: Record<AlgorithmId, AlgorithmMeta> = {
 };
 
 export const ALGORITHM_LIST = Object.values(ALGORITHMS);
+
+// Color palette for compare mode — order matches allAlgos in TopBar: dijkstra, astar, bidijkstra, biastar, greedy, bfs
+// Position-based, not algorithm-based: results are sorted before display so index 0 is always "best".
+export const COMPARE_COLORS = [
+  '#f59e0b', // amber
+  '#3b82f6', // blue
+  '#22d3ee', // cyan
+  '#a78bfa', // violet
+  '#F97316', // orange
+  '#22c55e', // green
+] as const;

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
-import { ALGORITHMS } from '../../lib/algorithmMeta';
+import { ALGORITHMS, COMPARE_COLORS } from '../../lib/algorithmMeta';
 import { formatDistance, formatDuration } from '../../lib/graphUtils';
 import { PanelTab, CompareResult } from '../../types';
 
@@ -295,13 +295,13 @@ function QueueSparkline({ data, progress }: { data: number[]; progress: number }
   );
 }
 
-const COMPARE_META: Record<string, { label: string; color: string }> = {
-  dijkstra:   { label: "Dijkstra's",  color: '#f59e0b' },
-  astar:      { label: 'A* Search',   color: '#3b82f6' },
-  bfs:        { label: 'BFS',         color: '#22c55e' },
-  greedy:     { label: 'Greedy BFS',  color: '#F97316' },
-  bidijkstra: { label: 'Bi-Dijkstra', color: '#22d3ee' },
-  biastar:    { label: 'Bi-A*',       color: '#a78bfa' },
+const COMPARE_LABELS: Record<string, string> = {
+  dijkstra:   "Dijkstra's",
+  astar:      'A* Search',
+  bfs:        'BFS',
+  greedy:     'Greedy BFS',
+  bidijkstra: 'Bi-Dijkstra',
+  biastar:    'Bi-A*',
 };
 
 const RANK_LABELS = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
@@ -311,14 +311,15 @@ function CompareSummary({ results }: { results: CompareResult[] }) {
     <>
       <Divider title="Ranking" />
       {results.map((r, i) => {
-        const meta = COMPARE_META[r.algorithm] ?? { label: r.algorithm, color: '#ffffff' };
+        const label = COMPARE_LABELS[r.algorithm] ?? r.algorithm;
+        const color = COMPARE_COLORS[i] ?? '#ffffff';
         return (
           <div className="ip-compare-card" key={r.algorithm}>
             <div className="ip-compare-card-header">
               <span className={`ip-rank-badge ${i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}`}>
                 {RANK_LABELS[i] ?? `${i + 1}th`}
               </span>
-              <div className="ip-compare-card-title" style={{ color: meta.color }}>{meta.label}</div>
+              <div className="ip-compare-card-title" style={{ color }}>{label}</div>
             </div>
             <Stat label="Path length"    value={r.pathLength > 0 ? formatDistance(r.pathLength) : 'No route'} accent={i === 0} />
             <Stat label="Nodes explored" value={r.nodesExplored.toLocaleString()} />
