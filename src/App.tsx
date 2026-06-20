@@ -4,6 +4,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import TopBar from './components/UI/TopBar';
 import BottomBar from './components/UI/BottomBar';
 import InfoPanel from './components/UI/InfoPanel';
+import PrivacyModal from './components/UI/PrivacyModal';
 import './styles.css';
 
 const MapView = lazy(() => import('./components/Map/MapView'));
@@ -19,6 +20,7 @@ export default function App() {
           <TopBar />
           <BottomBar />
           <InfoPanel />
+          <PrivacyModal />
         </div>
       </AppProvider>
     </ThemeProvider>

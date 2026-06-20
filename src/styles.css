@@ -868,3 +868,60 @@ html,body,#root {
     font-size: 11px;
   }
 }
+
+/* ── Privacy consent modal ──────────────────────────────────────────────────── */
+.privacy-modal-backdrop {
+  position: fixed; inset: 0; z-index: 2000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  padding: 16px;
+}
+.privacy-modal {
+  background: var(--bar);
+  border: 1px solid var(--bar-border);
+  border-radius: var(--radius);
+  box-shadow: var(--bar-shadow);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  max-width: 420px; width: 100%;
+  padding: 22px 24px;
+  color: var(--text);
+}
+.privacy-modal-title {
+  font-size: 15px; font-weight: 700; letter-spacing: .2px;
+  margin-bottom: 10px;
+}
+.privacy-modal-text {
+  font-size: 12.5px; line-height: 1.55; color: var(--text-2);
+  margin-bottom: 10px;
+}
+.privacy-modal-list {
+  list-style: none; display: flex; flex-direction: column; gap: 7px;
+  margin-bottom: 14px;
+}
+.privacy-modal-list li {
+  font-size: 11.5px; line-height: 1.5; color: var(--text-2);
+  padding-left: 14px; position: relative;
+}
+.privacy-modal-list li::before {
+  content: '·'; position: absolute; left: 2px; top: -1px;
+  color: var(--text-3); font-size: 16px;
+}
+.privacy-modal-link {
+  display: inline-block; font-size: 11.5px; color: var(--text-2);
+  text-decoration: none; border-bottom: 1px solid var(--border-hi);
+  margin-bottom: 18px; transition: var(--t);
+}
+.privacy-modal-link:hover { color: var(--text); }
+.privacy-modal-btn {
+  display: block; width: 100%; height: 38px;
+  background: var(--text); color: var(--bg);
+  border: none; border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 700; letter-spacing: .5px;
+  cursor: pointer; transition: var(--t);
+}
+.privacy-modal-btn:hover { opacity: .85; }
+
+@media (max-width: 480px) {
+  .privacy-modal { padding: 18px 18px; }
+}
