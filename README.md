@@ -13,9 +13,10 @@
 ## Features
 
 - **6 algorithms** — Dijkstra, A\*, BFS, Greedy Best-First, Bidirectional Dijkstra, Bidirectional A\*
-- **Compare mode** — run Dijkstra, A\*, and BFS side-by-side with live stats
+- **Compare mode** — run all six algorithms side-by-side with live stats
 - **Real road data** — fetched from OpenStreetMap via the Overpass API
 - **Geocoding** — search for any location by name (Nominatim)
+- **Auto-locate** — centers the map on your city on load (see [Privacy Policy](./PRIVACY.md))
 - **Playback controls** — play, pause, stop, reset, and 6 speed levels (including instant)
 - **Light / dark mode**
 - **Drag-and-drop** A/B pins directly on the map
@@ -26,7 +27,7 @@
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 20+
 - npm 9+
 
 ### Install
@@ -34,6 +35,21 @@
 ```bash
 npm install
 ```
+
+### Environment variables
+
+The frontend talks to a Cloudflare Worker API (see [Architecture](#architecture)), not a local backend. Copy the example file and fill in your worker's URL and API key:
+
+```bash
+cp .env.example .env
+```
+
+```
+VITE_API_BASE=https://your-worker.workers.dev
+VITE_API_KEY=your-worker-api-key
+```
+
+To stand up your own worker, see [`worker/README`](#worker-cloudflare-api) below.
 
 ### Run (development)
 
@@ -43,14 +59,13 @@ npm run dev
 
 Open **http://localhost:5173**
 
-> In development, Vite mounts the Express backend as middleware — a single process, single port. No separate server command needed.
-
 ### Production build
 
 ```bash
 npm run build   # type-check + Vite bundle → dist/
-npm start       # serves dist/ + API on port 3000
 ```
+
+Deploy the `dist/` output to any static host (the project is configured for Vercel via `vercel.json`).
 
 ---
 
@@ -61,7 +76,7 @@ npm start       # serves dist/ + API on port 3000
 3. **Choose an algorithm** from the dropdown.
 4. Click **Visualize** — Traverse fetches the road network and starts the animation.
 5. Use **Pause / Resume / Stop / Reset** and the speed controls to explore at your own pace.
-6. Switch to **Compare mode** to run Dijkstra, A\*, and BFS simultaneously and compare node counts, path lengths, and execution times.
+6. Switch to **Compare mode** to run all six algorithms simultaneously and compare node counts, path lengths, and execution times.
 
 ---
 
@@ -92,25 +107,45 @@ traverse/
 │   ├── lib/
 │   │   ├── algorithmMeta.ts # Metadata, descriptions, pseudocode for all algos
 │   │   └── graphUtils.ts    # Bounding box, nearest-node, haversine
-│   ├── server/              # Express backend (co-located, mounted by Vite in dev)
-│   │   ├── controllers/     # graphController, geocodingController
-│   │   ├── middleware/      # errorHandler
-│   │   └── services/        # overpassService, graphBuilder
-│   ├── types/index.ts       # Shared TypeScript types
-│   ├── server.ts            # Express app factory
-│   └── start.ts             # Production entry point
-├── vite.config.ts           # Mounts Express inside Vite dev server
-├── tsconfig.server.json     # Server-only TypeScript config
+│   ├── services/api.ts      # Calls the Cloudflare Worker API
+│   └── types/index.ts       # Shared TypeScript types
+├── worker/                  # Cloudflare Worker API (Hono) — see below
 └── package.json
 ```
 
 ### How it works
 
 1. **Map click / search** — sets A and B markers on the Leaflet map.
-2. **Visualize** — frontend requests the road graph for the bounding box from `/api/graph`.
-3. **Backend** — queries the [Overpass API](https://overpass-api.de/) for OSM road ways, builds a weighted adjacency graph (edge weights = haversine distance in metres).
+2. **Visualize** — frontend requests the road graph for the bounding box from the Cloudflare Worker API.
+3. **Worker** — queries the [Overpass API](https://overpass-api.de/) for OSM road ways, builds a weighted adjacency graph (edge weights = haversine distance in metres).
 4. **Algorithm** — runs synchronously on the client, producing a `VisualizationStep[]` array.
 5. **Animation** — a `requestAnimationFrame` loop steps through frames at the chosen speed, drawing coloured polylines on a `<canvas>` overlay above the Leaflet map.
+
+### Worker (Cloudflare API)
+
+The backend is a [Hono](https://hono.dev/) app running on Cloudflare Workers (`worker/`), exposing:
+
+| Route | Purpose |
+|---|---|
+| `GET /graph` | Builds and returns the road graph for a bounding box |
+| `GET /graph/nearest` | Finds the nearest graph node to a coordinate |
+| `GET /geocode/search` | Proxies Nominatim place search |
+| `GET /geocode/reverse` | Proxies Nominatim reverse geocoding |
+| `GET /health` | Health check |
+
+Every request must include an `X-API-Key` header matching the worker's `API_KEY` secret, or it's rejected with `401`.
+
+To run/deploy your own:
+
+```bash
+cd worker
+npm install
+npm run dev      # local dev via Wrangler
+npx wrangler secret put API_KEY   # set your API key (prompted)
+npm run deploy   # deploy to Cloudflare
+```
+
+> Note: the API key is exposed in the frontend's compiled JS bundle (Vite env vars are inlined at build time), so it only deters casual abuse of the worker URL — it is not a substitute for proper auth on sensitive endpoints.
 
 ---
 
@@ -121,11 +156,17 @@ traverse/
 | Frontend | React 18, TypeScript, Vite |
 | Map | Leaflet.js, OpenStreetMap / CARTO tiles |
 | Canvas | HTML5 Canvas (direct 2D drawing, no library) |
-| Backend | Node.js, Express, TypeScript |
+| API | Cloudflare Workers, Hono |
 | Road data | Overpass API (OpenStreetMap) |
 | Geocoding | Nominatim (OpenStreetMap) |
 | State | React `useReducer` |
 | Styling | Pure CSS custom properties (no framework) |
+
+---
+
+## Privacy
+
+Traverse asks for your location on load only to center the map on your city — nothing is stored or sent anywhere. See [PRIVACY.md](./PRIVACY.md) for the full policy.
 
 ---
 

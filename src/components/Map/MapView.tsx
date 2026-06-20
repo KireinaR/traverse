@@ -16,7 +16,7 @@ L.Icon.Default.mergeOptions({
 
 const DARK_TILE  = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 const LIGHT_TILE = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-const ATTR = '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+const ATTR = '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a> | <a href="https://github.com/KireinaR/traverse" target="_blank" rel="noopener noreferrer">Traverse</a> by <a href="https://github.com/KireinaR" target="_blank" rel="noopener noreferrer">KireinaR</a> (Open Source)';
 
 const BASE_SPS = 500;
 
