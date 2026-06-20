@@ -5,7 +5,7 @@ import { useApp } from '../../context/AppContext';
 import { useTheme } from '../../context/ThemeContext';
 import { reverseGeocode } from '../../services/api';
 import { SpeedMultiplier, VisualizationStep, AlgorithmId } from '../../types';
-import { ALGORITHMS } from '../../lib/algorithmMeta';
+import { ALGORITHMS, COMPARE_COLORS } from '../../lib/algorithmMeta';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -20,7 +20,6 @@ const ATTR = '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap
 
 const BASE_SPS = 500;
 
-const COMPARE_COLORS = ['#f59e0b', '#3b82f6', '#22d3ee', '#a78bfa', '#F97316', '#22c55e'] as const;
 
 function stepsPerSec(speed: SpeedMultiplier): number {
   if (speed === 'instant') return Infinity;

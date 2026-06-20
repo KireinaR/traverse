@@ -209,7 +209,7 @@ export default function TopBar() {
             <div className="tb-error" title={state.graphError}>
               <WarnIcon />
               <span className="tb-error-text">{state.graphError}</span>
-              <button onClick={() => dispatch({ type: 'SET_GRAPH_ERROR', error: '' } as any)}>×</button>
+              <button onClick={() => dispatch({ type: 'SET_GRAPH_ERROR', error: '' })}>×</button>
             </div>
           )}
 
