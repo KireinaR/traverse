@@ -15,8 +15,10 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-const DARK_TILE  = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-const LIGHT_TILE = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+const CARTO_KEY = import.meta.env.VITE_CARTO_API_KEY as string;
+const CARTO_KEY_PARAM = CARTO_KEY ? `?key=${CARTO_KEY}` : '';
+const DARK_TILE  = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png${CARTO_KEY_PARAM}`;
+const LIGHT_TILE = `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png${CARTO_KEY_PARAM}`;
 const ATTR = '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a> | <a href="https://github.com/KireinaR/traverse" target="_blank" rel="noopener noreferrer">Traverse</a> by <a href="https://github.com/KireinaR" target="_blank" rel="noopener noreferrer">KireinaR</a> (Open Source)';
 
 const BASE_SPS = 500;
